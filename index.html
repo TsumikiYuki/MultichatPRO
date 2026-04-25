@@ -17,6 +17,12 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: 0.3s;
+    }
+
+    body.light {
+      background: #f1f5f9;
+      color: #111;
     }
 
     header {
@@ -26,7 +32,6 @@
       padding: 14px 20px;
       background: rgba(10,10,30,0.6);
       backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .logo {
@@ -41,60 +46,9 @@
       border-radius: 10px;
     }
 
-    .tabs {
-      display: flex;
-      gap: 20px;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
     .tabs span {
+      margin: 0 10px;
       cursor: pointer;
-    }
-
-    .tabs span.active {
-      color: #ff4ecd;
-      border-bottom: 2px solid #ff4ecd;
-      padding-bottom: 4px;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn {
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .btn.primary {
-      border: 1px solid #ff4ecd;
-      color: #ff4ecd;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      padding: 10px 20px;
-    }
-
-    input {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 8px;
-      border-radius: 8px;
-      color: white;
-      outline: none;
     }
 
     .grid {
@@ -106,164 +60,145 @@
     }
 
     .chat-box {
-      background: linear-gradient(145deg, rgba(20,20,40,0.7), rgba(10,10,25,0.7));
+      position: relative;
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
     }
+
+    .chat-box.yt { box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+    .chat-box.tw { box-shadow: 0 0 20px rgba(145,70,255,0.4); }
+    .chat-box.kick { box-shadow: 0 0 20px rgba(0,255,100,0.4); }
 
     .chat-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .chat-header .left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .badge {
-      background: #ff4ecd;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 20px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 8px;
       font-size: 12px;
-      opacity: 0.7;
+      background: rgba(0,0,0,0.5);
     }
 
-    @media (max-width: 700px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
+    iframe { width: 100%; height: 100%; border: none; }
+
+    .remove {
+      cursor: pointer;
+      color: red;
     }
+
+    .panel { display:none; padding:20px; }
+    .panel.active { display:block; }
+
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <img src="https://i.imgur.com/F1x3Egc.png
-    MULTICHAT <span style="color:#ff4ecd;">LIVE PRO</span>
+    <img src="https://i.imgur.com/ZNLFXUd.png">
+    MULTICHAT
   </div>
 
   <div class="tabs">
-    <span class="active">Chats</span>
-    <span>Configurações</span>
-    <span>Sobre</span>
+    <span onclick="showTab('chats')">Chats</span>
+    <span onclick="showTab('config')">Configurações</span>
+    <span onclick="showTab('sobre')">Sobre</span>
   </div>
 
-  <div class="top-actions">
-    <button class="btn">Tema</button>
-    <button class="btn primary">+ Chat</button>
-  </div>
+  <button onclick="toggleTheme()">Tema</button>
 </header>
 
-<div class="controls">
+<div id="chats" class="panel active">
   <input id="yt" placeholder="Link YouTube">
-  <button class="btn" onclick="addYT()">Adicionar</button>
+  <button onclick="addYT()">Add YT</button>
 
   <input id="twitch" placeholder="Canal Twitch">
-  <button class="btn" onclick="addTwitch()">Adicionar</button>
+  <button onclick="addTwitch()">Add Twitch</button>
+
+  <input id="kick" placeholder="Canal Kick">
+  <button onclick="addKick()">Add Kick</button>
+
+  <p style="font-size:12px;opacity:0.7">⚠️ Use o link da barra do navegador do YouTube, não o menu de compartilhar</p>
+
+  <div class="grid" id="grid"></div>
 </div>
 
-<div class="grid" id="grid"></div>
-
-<div class="footer">
-  <span>MultiChat Live Pro 1.0</span>
-  <span>Chats em tempo real</span>
+<div id="config" class="panel">
+  <h3>Configurações</h3>
+  <p>Mais opções em breve 👀</p>
 </div>
+
+<div id="sobre" class="panel">
+  <h3>Sobre</h3>
+  <p>Sou uma youtuber e escritora que às vezes programa por besteira.</p>
+  <p>@tsumikiYuki</p>
+</div>
+
+<footer style="text-align:center;padding:10px;font-size:12px;opacity:0.6">
+  Feito por TsumikiYuki
+</footer>
 
 <script>
-  function extractYT(url) {
-    try {
-      const u = new URL(url);
-      return u.searchParams.get('v');
-    } catch {
-      return url;
-    }
-  }
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-  function getDomain() {
-    return location.hostname || "localhost";
-  }
+function toggleTheme(){
+  document.body.classList.toggle('light');
+}
 
-  function createChat(src, type, name) {
-    const box = document.createElement('div');
-    box.className = 'chat-box';
+function extractYT(url){
+  try{ return new URL(url).searchParams.get('v'); }
+  catch{ return url; }
+}
 
-    const header = document.createElement('div');
-    header.className = 'chat-header';
+function getDomain(){ return location.hostname || "localhost"; }
 
-    const left = document.createElement('div');
-    left.className = 'left';
+function createChat(src,type,name){
+  const box=document.createElement('div');
+  box.className='chat-box '+type;
 
-    const icon = document.createElement('img');
-    icon.src = type === 'yt'
-      ? 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png'
-      : 'https://cdn-icons-png.flaticon.com/512/2111/2111668.png';
-    icon.style.width = '16px';
+  const header=document.createElement('div');
+  header.className='chat-header';
 
-    const title = document.createElement('span');
-    title.innerText = name;
+  const title=document.createElement('span');
+  title.innerText=name;
 
-    const badge = document.createElement('span');
-    badge.className = 'badge';
-    badge.innerText = 'AO VIVO';
+  const remove=document.createElement('span');
+  remove.innerText='✖';
+  remove.className='remove';
+  remove.onclick=()=>box.remove();
 
-    left.appendChild(icon);
-    left.appendChild(title);
-    left.appendChild(badge);
+  header.appendChild(title);
+  header.appendChild(remove);
 
-    header.appendChild(left);
+  const iframe=document.createElement('iframe');
+  iframe.src=src;
 
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
+  box.appendChild(header);
+  box.appendChild(iframe);
 
-    box.appendChild(header);
-    box.appendChild(iframe);
+  document.getElementById('grid').appendChild(box);
+}
 
-    document.getElementById('grid').appendChild(box);
-  }
+function addYT(){
+  const id=extractYT(document.getElementById('yt').value);
+  const src=`https://www.youtube.com/live_chat?v=${id}&embed_domain=${getDomain()}`;
+  createChat(src,'yt','YouTube');
+}
 
-  function addYT() {
-    const input = document.getElementById('yt').value;
-    const id = extractYT(input);
+function addTwitch(){
+  const c=document.getElementById('twitch').value;
+  const src=`https://www.twitch.tv/embed/${c}/chat?parent=${getDomain()}`;
+  createChat(src,'tw',c);
+}
 
-    if (!id) return alert('Link inválido');
-
-    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${getDomain()}`;
-    createChat(src, 'yt', 'YouTube');
-  }
-
-  function addTwitch() {
-    const channel = document.getElementById('twitch').value;
-
-    if (!channel) return alert('Digite o canal');
-
-    const src = `https://www.twitch.tv/embed/${channel}/chat?parent=${getDomain()}`;
-    createChat(src, 'tw', channel);
-  }
+function addKick(){
+  const c=document.getElementById('kick').value;
+  const src=`https://kick.com/${c}/chatroom`;
+  createChat(src,'kick',c);
+}
 </script>
 
 </body>
