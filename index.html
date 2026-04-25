@@ -2,48 +2,43 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MultiChat Live Pro | @tsumikiYuki</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     * { box-sizing: border-box; }
 
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #0b0f2a, #020617);
+      background: #020617;
       color: white;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow: hidden; /* Impede o scroll da página inteira */
     }
 
+    /* Cabeçalho e Controles compactos para sobrar espaço */
     header {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
-      background: rgba(10,10,30,0.8);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      gap: 15px;
+      padding: 10px 15px;
+      background: rgba(10,10,30,0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
     }
 
     .logo {
+      font-weight: 700;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .logo img {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      gap: 8px;
     }
 
     .dev-tag {
@@ -51,154 +46,123 @@
       background: #ff4ecd;
       padding: 2px 6px;
       border-radius: 4px;
-      margin-left: 5px;
-      vertical-align: middle;
       text-decoration: none;
       color: white;
     }
 
-    .tabs {
-      display: flex;
-      gap: 15px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
-
-    .tabs span.active {
-      color: #ff4ecd;
-      border-bottom: 2px solid #ff4ecd;
-      padding-bottom: 4px;
-    }
-
     .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 15px 20px;
-      background: rgba(255,255,255,0.02);
+      display: flex;
+      gap: 8px;
+      padding: 8px 15px;
+      background: rgba(255,255,255,0.03);
+      flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .input-group {
+      flex: 1;
       display: flex;
-      gap: 5px;
+      gap: 4px;
+      min-width: 200px;
     }
 
     input {
       flex: 1;
-      background: rgba(255,255,255,0.06);
+      background: rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.1);
-      padding: 10px;
-      border-radius: 8px;
+      padding: 6px 12px;
+      border-radius: 6px;
       color: white;
       outline: none;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    .btn {
-      padding: 10px 15px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-      white-space: nowrap;
-      font-weight: 600;
       font-size: 13px;
     }
 
-    .btn.primary {
-      border: 1px solid #ff4ecd;
-      color: #ff4ecd;
+    .btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
     }
 
-    .grid {
+    .btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* GRID MÁGICO QUE OCUPA TUDO */
+    #grid {
       flex: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 15px;
-      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: stretch;
+      justify-content: stretch;
+      padding: 5px;
+      gap: 5px;
+      overflow-y: auto; /* Scroll apenas se houver MUITOS chats */
     }
 
     .chat-box {
-      background: rgba(20,20,40,0.6);
-      border-radius: 12px;
+      flex: 1 1 45%; /* Tenta ficar lado a lado */
+      min-width: 300px;
+      min-height: 300px;
+      background: #000;
       border: 1px solid rgba(255,255,255,0.1);
-      overflow: hidden;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      height: 500px; /* Altura fixa para os chats */
+      position: relative;
+    }
+
+    /* Se houver apenas 1 chat, ele ocupa 100% */
+    .chat-box:only-child {
+      flex: 1 1 100%;
     }
 
     .chat-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
-      background: rgba(0,0,0,0.2);
-    }
-
-    .chat-header .left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.05);
+      font-size: 11px;
     }
 
     .badge {
       background: #ff4ecd;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 1px 5px;
+      border-radius: 3px;
       font-weight: bold;
+      margin-left: 5px;
     }
 
     iframe {
-      width: 100%;
       flex: 1;
+      width: 100%;
       border: none;
     }
 
-    .footer {
+    footer {
+      padding: 5px 15px;
+      font-size: 10px;
+      opacity: 0.5;
       display: flex;
       justify-content: space-between;
-      padding: 15px 20px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      font-size: 11px;
-      opacity: 0.6;
-      background: #020617;
+      flex-shrink: 0;
     }
 
-    .author-link {
-      color: #ff4ecd;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    /* Ajustes para Celular */
-    @media (max-width: 768px) {
-      .controls {
-        grid-template-columns: 1fr;
+    /* AJUSTES PARA CELULAR */
+    @media (max-width: 600px) {
+      .input-group {
+        min-width: 100%;
       }
-      
-      .tabs {
-        order: 3;
-        width: 100%;
-        justify-content: center;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-        padding: 10px;
-      }
-
       .chat-box {
-        height: 450px;
+        flex: 1 1 100%; /* No celular, um embaixo do outro ocupando largura total */
+        min-height: 40vh; /* Cada chat ocupa quase metade da tela do celular */
       }
-
       header {
-        justify-content: center;
-        text-align: center;
+        flex-direction: column;
+        gap: 10px;
       }
     }
   </style>
@@ -207,130 +171,81 @@
 
 <header>
   <div class="logo">
-    <img src="https://i.imgur.com/ZNLFXUd.png" alt="Logo">
-    MULTICHAT <span style="color:#ff4ecd; margin-left: 5px;">LIVE PRO</span>
-    <a href="#" class="dev-tag">@tsumikiYuki</a>
+    MULTICHAT <span style="color:#ff4ecd;">LIVE PRO</span>
+    <span class="dev-tag">@tsumikiYuki</span>
   </div>
-
-  <div class="tabs">
-    <span class="active">Chats</span>
-    <span>Configurações</span>
-  </div>
-
-  <div class="top-actions">
-    <button class="btn primary" onclick="alert('Use os campos abaixo para adicionar chats!')">+ Adicionar</button>
-  </div>
+  <div style="font-size: 11px; color: #ff4ecd;">MODO MOSAICO ATIVO</div>
 </header>
 
 <div class="controls">
   <div class="input-group">
-    <input id="yt" placeholder="Link do YouTube">
-    <button class="btn" onclick="addYT()">YouTube</button>
+    <input id="yt" placeholder="Link YouTube Live">
+    <button class="btn" onclick="addYT()">+ YouTube</button>
   </div>
-
   <div class="input-group">
-    <input id="twitch" placeholder="Canal da Twitch">
-    <button class="btn" onclick="addTwitch()">Twitch</button>
+    <input id="twitch" placeholder="Nome do Canal Twitch">
+    <button class="btn" onclick="addTwitch()">+ Twitch</button>
   </div>
 </div>
 
-<div class="grid" id="grid">
-  <!-- Chats aparecerão aqui -->
+<div id="grid">
+  <!-- Chats injetados aqui -->
 </div>
 
-<div class="footer">
-  <span>MultiChat Live Pro v1.1</span>
-  <span>Developed by <a href="https://instagram.com/tsumikiYuki" class="author-link">@tsumikiYuki</a></span>
-</div>
+<footer>
+  <span>v1.2 Fixed Mobile</span>
+  <span>By @tsumikiYuki</span>
+</footer>
 
 <script>
   function extractYT(url) {
     try {
-      if (url.includes('youtube.com/live/')) {
-         return url.split('live/')[1].split('?')[0];
-      }
-      const u = new URL(url);
-      return u.searchParams.get('v');
-    } catch {
+      if (url.includes('youtube.com/live/')) return url.split('live/')[1].split('?')[0];
+      if (url.includes('v=')) return new URL(url).searchParams.get('v');
       return url;
-    }
-  }
-
-  function getDomain() {
-    return window.location.hostname || "localhost";
+    } catch { return url; }
   }
 
   function createChat(src, type, name) {
     const grid = document.getElementById('grid');
-    
     const box = document.createElement('div');
     box.className = 'chat-box';
 
-    const header = document.createElement('div');
-    header.className = 'chat-header';
+    box.innerHTML = `
+      <div class="chat-header">
+        <div>
+          <strong>${type.toUpperCase()}</strong> | ${name}
+          <span class="badge">AO VIVO</span>
+        </div>
+        <div style="cursor:pointer; padding: 0 5px;" onclick="this.parentElement.parentElement.remove()">✕</div>
+      </div>
+      <iframe src="${src}" allowfullscreen></iframe>
+    `;
 
-    const left = document.createElement('div');
-    left.className = 'left';
-
-    const icon = document.createElement('img');
-    icon.src = type === 'yt'
-      ? 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png'
-      : 'https://cdn-icons-png.flaticon.com/512/2111/2111668.png';
-    icon.style.width = '16px';
-
-    const title = document.createElement('span');
-    title.innerText = name;
-    title.style.fontSize = '12px';
-
-    const badge = document.createElement('span');
-    badge.className = 'badge';
-    badge.innerText = 'CHAT ATIVO';
-
-    const closeBtn = document.createElement('span');
-    closeBtn.innerText = '✕';
-    closeBtn.style.cursor = 'pointer';
-    closeBtn.onclick = () => box.remove();
-
-    left.appendChild(icon);
-    left.appendChild(title);
-    left.appendChild(badge);
-
-    header.appendChild(left);
-    header.appendChild(closeBtn);
-
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.allow = "autoplay; fullscreen";
-
-    box.appendChild(header);
-    box.appendChild(iframe);
-
-    grid.prepend(box);
+    grid.appendChild(box);
   }
 
   function addYT() {
     const input = document.getElementById('yt');
     const id = extractYT(input.value);
-
-    if (!id || id.length < 5) return alert('Insira um link válido do YouTube');
-
-    const domain = getDomain();
-    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${domain}`;
+    if (!id) return alert('Link inválido');
     
-    createChat(src, 'yt', 'YouTube Chat');
+    const domain = window.location.hostname || "localhost";
+    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${domain}&dark_theme=1`;
+    
+    createChat(src, 'YouTube', id);
     input.value = '';
   }
 
   function addTwitch() {
     const input = document.getElementById('twitch');
     const channel = input.value.trim().toLowerCase();
+    if (!channel) return alert('Digite o canal');
 
-    if (!channel) return alert('Digite o nome do canal');
-
-    const domain = getDomain();
+    const domain = window.location.hostname || "localhost";
     const src = `https://www.twitch.tv/embed/${channel}/chat?parent=${domain}&darkpopout`;
     
-    createChat(src, 'tw', channel);
+    createChat(src, 'Twitch', channel);
     input.value = '';
   }
 </script>
