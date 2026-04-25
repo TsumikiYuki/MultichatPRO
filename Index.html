@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MultiChat Live Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #0b0f2a, #020617);
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(10,10,30,0.6);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .logo img {
+      width: 34px;
+      border-radius: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .tabs span {
+      cursor: pointer;
+    }
+
+    .tabs span.active {
+      color: #ff4ecd;
+      border-bottom: 2px solid #ff4ecd;
+      padding-bottom: 4px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn.primary {
+      border: 1px solid #ff4ecd;
+      color: #ff4ecd;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      padding: 10px 20px;
+    }
+
+    input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 8px;
+      border-radius: 8px;
+      color: white;
+      outline: none;
+    }
+
+    .grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .chat-box {
+      background: linear-gradient(145deg, rgba(20,20,40,0.7), rgba(10,10,25,0.7));
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .chat-header .left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
+      background: #ff4ecd;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="https://i.imgur.com/ZNLFXUd.png">
+    MULTICHAT <span style="color:#ff4ecd;">LIVE PRO</span>
+  </div>
+
+  <div class="tabs">
+    <span class="active">Chats</span>
+    <span>Configurações</span>
+    <span>Sobre</span>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn">Tema</button>
+    <button class="btn primary">+ Chat</button>
+  </div>
+</header>
+
+<div class="controls">
+  <input id="yt" placeholder="Link YouTube">
+  <button class="btn" onclick="addYT()">Adicionar</button>
+
+  <input id="twitch" placeholder="Canal Twitch">
+  <button class="btn" onclick="addTwitch()">Adicionar</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="footer">
+  <span>MultiChat Live Pro 1.0</span>
+  <span>Chats em tempo real</span>
+</div>
+
+<script>
+  function extractYT(url) {
+    try {
+      const u = new URL(url);
+      return u.searchParams.get('v');
+    } catch {
+      return url;
+    }
+  }
+
+  function getDomain() {
+    return location.hostname || "localhost";
+  }
+
+  function createChat(src, type, name) {
+    const box = document.createElement('div');
+    box.className = 'chat-box';
+
+    const header = document.createElement('div');
+    header.className = 'chat-header';
+
+    const left = document.createElement('div');
+    left.className = 'left';
+
+    const icon = document.createElement('img');
+    icon.src = type === 'yt'
+      ? 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png'
+      : 'https://cdn-icons-png.flaticon.com/512/2111/2111668.png';
+    icon.style.width = '16px';
+
+    const title = document.createElement('span');
+    title.innerText = name;
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.innerText = 'AO VIVO';
+
+    left.appendChild(icon);
+    left.appendChild(title);
+    left.appendChild(badge);
+
+    header.appendChild(left);
+
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+
+    box.appendChild(header);
+    box.appendChild(iframe);
+
+    document.getElementById('grid').appendChild(box);
+  }
+
+  function addYT() {
+    const input = document.getElementById('yt').value;
+    const id = extractYT(input);
+
+    if (!id) return alert('Link inválido');
+
+    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${getDomain()}`;
+    createChat(src, 'yt', 'YouTube');
+  }
+
+  function addTwitch() {
+    const channel = document.getElementById('twitch').value;
+
+    if (!channel) return alert('Digite o canal');
+
+    const src = `https://www.twitch.tv/embed/${channel}/chat?parent=${getDomain()}`;
+    createChat(src, 'tw', channel);
+  }
+</script>
+
+</body>
+</html>
