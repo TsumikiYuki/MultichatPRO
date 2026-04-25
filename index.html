@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MultiChat Live Pro</title>
+  <title>MultiChat Live Pro | @tsumikiYuki</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -14,19 +14,22 @@
       font-family: 'Inter', sans-serif;
       background: radial-gradient(circle at top, #0b0f2a, #020617);
       color: white;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     header {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       padding: 14px 20px;
-      background: rgba(10,10,30,0.6);
+      background: rgba(10,10,30,0.8);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(255,255,255,0.08);
+      gap: 15px;
     }
 
     .logo {
@@ -34,22 +37,31 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
+      font-size: 1.1rem;
     }
 
     .logo img {
-      width: 34px;
-      border-radius: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+    .dev-tag {
+      font-size: 10px;
+      background: #ff4ecd;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+      text-decoration: none;
+      color: white;
     }
 
     .tabs {
       display: flex;
-      gap: 20px;
-      font-size: 14px;
+      gap: 15px;
+      font-size: 13px;
       opacity: 0.8;
-    }
-
-    .tabs span {
-      cursor: pointer;
     }
 
     .tabs span.active {
@@ -58,19 +70,42 @@
       padding-bottom: 4px;
     }
 
-    .top-actions {
-      display: flex;
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
+      padding: 15px 20px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 5px;
+    }
+
+    input {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+      outline: none;
+      font-size: 14px;
+      width: 100%;
     }
 
     .btn {
-      padding: 8px 14px;
-      border-radius: 10px;
+      padding: 10px 15px;
+      border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.1);
       background: rgba(255,255,255,0.05);
       color: white;
       cursor: pointer;
       transition: 0.2s;
+      white-space: nowrap;
+      font-weight: 600;
+      font-size: 13px;
     }
 
     .btn.primary {
@@ -78,83 +113,92 @@
       color: #ff4ecd;
     }
 
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      padding: 10px 20px;
-    }
-
-    input {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 8px;
-      border-radius: 8px;
-      color: white;
-      outline: none;
-    }
-
     .grid {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 14px;
-      padding: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 15px;
+      padding: 15px;
     }
 
     .chat-box {
-      background: linear-gradient(145deg, rgba(20,20,40,0.7), rgba(10,10,25,0.7));
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(20,20,40,0.6);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
+      height: 500px; /* Altura fixa para os chats */
     }
 
     .chat-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
     }
 
     .chat-header .left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .badge {
       background: #ff4ecd;
       font-size: 10px;
       padding: 2px 6px;
-      border-radius: 6px;
+      border-radius: 4px;
+      font-weight: bold;
     }
 
     iframe {
       width: 100%;
-      height: 100%;
+      flex: 1;
       border: none;
     }
 
     .footer {
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
+      padding: 15px 20px;
       border-top: 1px solid rgba(255,255,255,0.05);
-      font-size: 12px;
-      opacity: 0.7;
+      font-size: 11px;
+      opacity: 0.6;
+      background: #020617;
     }
 
-    @media (max-width: 700px) {
+    .author-link {
+      color: #ff4ecd;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Ajustes para Celular */
+    @media (max-width: 768px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      
+      .tabs {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+      }
+
       .grid {
         grid-template-columns: 1fr;
+        padding: 10px;
+      }
+
+      .chat-box {
+        height: 450px;
+      }
+
+      header {
+        justify-content: center;
+        text-align: center;
       }
     }
   </style>
@@ -163,40 +207,48 @@
 
 <header>
   <div class="logo">
-    <img src="https://i.imgur.com/ZNLFXUd.png">
-    MULTICHAT <span style="color:#ff4ecd;">LIVE PRO</span>
+    <img src="https://i.imgur.com/ZNLFXUd.png" alt="Logo">
+    MULTICHAT <span style="color:#ff4ecd; margin-left: 5px;">LIVE PRO</span>
+    <a href="#" class="dev-tag">@tsumikiYuki</a>
   </div>
 
   <div class="tabs">
     <span class="active">Chats</span>
     <span>Configurações</span>
-    <span>Sobre</span>
   </div>
 
   <div class="top-actions">
-    <button class="btn">Tema</button>
-    <button class="btn primary">+ Chat</button>
+    <button class="btn primary" onclick="alert('Use os campos abaixo para adicionar chats!')">+ Adicionar</button>
   </div>
 </header>
 
 <div class="controls">
-  <input id="yt" placeholder="Link YouTube">
-  <button class="btn" onclick="addYT()">Adicionar</button>
+  <div class="input-group">
+    <input id="yt" placeholder="Link do YouTube">
+    <button class="btn" onclick="addYT()">YouTube</button>
+  </div>
 
-  <input id="twitch" placeholder="Canal Twitch">
-  <button class="btn" onclick="addTwitch()">Adicionar</button>
+  <div class="input-group">
+    <input id="twitch" placeholder="Canal da Twitch">
+    <button class="btn" onclick="addTwitch()">Twitch</button>
+  </div>
 </div>
 
-<div class="grid" id="grid"></div>
+<div class="grid" id="grid">
+  <!-- Chats aparecerão aqui -->
+</div>
 
 <div class="footer">
-  <span>MultiChat Live Pro 1.0</span>
-  <span>Chats em tempo real</span>
+  <span>MultiChat Live Pro v1.1</span>
+  <span>Developed by <a href="https://instagram.com/tsumikiYuki" class="author-link">@tsumikiYuki</a></span>
 </div>
 
 <script>
   function extractYT(url) {
     try {
+      if (url.includes('youtube.com/live/')) {
+         return url.split('live/')[1].split('?')[0];
+      }
       const u = new URL(url);
       return u.searchParams.get('v');
     } catch {
@@ -205,10 +257,12 @@
   }
 
   function getDomain() {
-    return location.hostname || "localhost";
+    return window.location.hostname || "localhost";
   }
 
   function createChat(src, type, name) {
+    const grid = document.getElementById('grid');
+    
     const box = document.createElement('div');
     box.className = 'chat-box';
 
@@ -226,43 +280,58 @@
 
     const title = document.createElement('span');
     title.innerText = name;
+    title.style.fontSize = '12px';
 
     const badge = document.createElement('span');
     badge.className = 'badge';
-    badge.innerText = 'AO VIVO';
+    badge.innerText = 'CHAT ATIVO';
+
+    const closeBtn = document.createElement('span');
+    closeBtn.innerText = '✕';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.onclick = () => box.remove();
 
     left.appendChild(icon);
     left.appendChild(title);
     left.appendChild(badge);
 
     header.appendChild(left);
+    header.appendChild(closeBtn);
 
     const iframe = document.createElement('iframe');
     iframe.src = src;
+    iframe.allow = "autoplay; fullscreen";
 
     box.appendChild(header);
     box.appendChild(iframe);
 
-    document.getElementById('grid').appendChild(box);
+    grid.prepend(box);
   }
 
   function addYT() {
-    const input = document.getElementById('yt').value;
-    const id = extractYT(input);
+    const input = document.getElementById('yt');
+    const id = extractYT(input.value);
 
-    if (!id) return alert('Link inválido');
+    if (!id || id.length < 5) return alert('Insira um link válido do YouTube');
 
-    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${getDomain()}`;
-    createChat(src, 'yt', 'YouTube');
+    const domain = getDomain();
+    const src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${domain}`;
+    
+    createChat(src, 'yt', 'YouTube Chat');
+    input.value = '';
   }
 
   function addTwitch() {
-    const channel = document.getElementById('twitch').value;
+    const input = document.getElementById('twitch');
+    const channel = input.value.trim().toLowerCase();
 
-    if (!channel) return alert('Digite o canal');
+    if (!channel) return alert('Digite o nome do canal');
 
-    const src = `https://www.twitch.tv/embed/${channel}/chat?parent=${getDomain()}`;
+    const domain = getDomain();
+    const src = `https://www.twitch.tv/embed/${channel}/chat?parent=${domain}&darkpopout`;
+    
     createChat(src, 'tw', channel);
+    input.value = '';
   }
 </script>
 
